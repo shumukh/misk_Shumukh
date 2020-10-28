@@ -1,0 +1,105 @@
+#Friends Sitcom
+#Shumukh Alshareef
+#2020.09.08
+
+library(tidyverse) 
+install.packages("friends")
+library(tidytuesdayR)
+library(scales)
+theme_set(theme_light())
+
+# Get familiar with our data:
+names(friends)
+summary(friends)
+typeof(friends)
+glimpse(friends)
+
+
+# Get the Data
+
+# Read in with tidytuesdayR package 
+# Install from CRAN via: install.packages("tidytuesdayR")
+# This loads the readme and all the datasets for the week of interest
+
+# Either ISO-8601 date or year/week works!
+
+tuesdata <- tidytuesdayR::tt_load('2020-09-08')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 37)
+
+friends <- tuesdata$friends
+
+# Or read in the data manually
+
+friends <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-08/friends.csv')
+friends_emotions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-08/friends_emotions.csv')
+friends_info <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-08/friends_info.csv')
+
+#lood the weekly Data 
+Dowlaod the weekly data and make available in the `tt` object 
+
+...{r load}
+
+tt <- tt_load("2020-09-08")
+
+...
+
+...{r}
+library(glue)
+  episodes <- tt$friends_info %>%
+  mutate(episode_title = glue("{ season }.{episode} {title}"),
+  episode_title = fct_reorder(episode_title, season + .001 * episode))
+  
+  
+  friends <- tt$friends %>%
+  inner_join(tt$friends_info, by = c("season" , "episode")) 
+  
+  friends%>%
+  count(season, episode_title)
+  
+  Graph ratings over time 
+  
+  episodes %>%
+  ggplot(aes(as.integer(episode_title),us_views_millions)) +
+  geom_line()+
+  geom_point(aes (color = factor(season))) +
+  geom_text(aes(label = title), vjust = 1 , hjust = 1, 
+   check_overlap = TRUE ,
+   size = 2 ) +
+  expand_limits( y = 0 ) +
+  labs( x = "Episode number",
+  color ="season")
+  
+  
+   
+   friends %>% 
+   count(episode_title , sort = TRUE)
+  
+tt$friends %>%
+count(speaker , sort = TRUE)
+
+friends %>%
+  count(season, episode, sort = TRUE)
+
+ main_cast <- friends %>%
+  count(speaker , sort = TRUE) %>%
+   head(6)
+   
+   main_cast %>%
+   mutate(speaker = fct_reorder(speaker, n)) %>%
+   ggplot(aes(n , speaker)) +
+   geom_col()
+ 
+ friends %>%
+ semi_join(main_cast, by = "speaker") %>%
+ group_by(speaker)%>%
+ summarize(n_episodes = n_distinct())
+
+  friends %>% 
+  count(season)
+ 
+ ##predict a rating based on he characters who speak ?
+ friends %>%
+ count(speaker, title , imdb_rating)%>%
+semi_join(main_cast , by = "speaker")
+
+
